@@ -9,7 +9,8 @@ defmodule PageProducer do
 
   def init(initial_state) do
     Logger.info("PageProducer init")
-    {:producer, initial_state}
+    # buffer_size is the size of waiting list
+    {:producer, initial_state, buffer_size: 1}
   end
 
   # handle_demand(number_of_demands, producer_state)
