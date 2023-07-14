@@ -5,12 +5,13 @@ defmodule Scraper.Application do
 
   @impl true
   def start(_type, _args) do
+    # the process starts in this order
     children = [
-      {Registry, keys: :unique, name: ProducerConsumerRegistry},
       PageProducer,
-      producer_consumer_spec(id: 1),
-      producer_consumer_spec(id: 2),
-      PageConsumerSupervisor
+      PageConsumerSupervisor,
+      # Since we have to find PageConsumerSupervisors pid,
+      # OnlinePageProducerConsumer should come after.
+      OnlinePageProducerConsumer
     ]
 
     opts = [strategy: :one_for_one, name: Scraper.Supervisor]
