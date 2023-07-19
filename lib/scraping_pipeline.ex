@@ -13,11 +13,22 @@ defmodule ScrapingPipeline do
         transformer: {ScrapingPipeline, :transform, []}
       ],
       processors: [
-        default: []
+        default: [max_demand: 1, concurrency: 2]
+      ],
+      batchers: [
+        default: [batch_size: 1, concurrency: 2]
       ]
     ]
 
     Broadway.start_link(__MODULE__, options)
+  end
+
+  def handle_message(_processor, message, _context) do
+    if Scraper.online?(message.data) do
+      Broadway.Message.put_batch_key(message, message.data)
+    else
+      Broadway.Message.failed(message, "offline")
+    end
   end
 
   @doc """
