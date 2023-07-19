@@ -2,15 +2,6 @@ defmodule ScrapingPipeline do
   use Broadway
   require Logger
 
-  def start(_type, _args) do
-    children = [
-      ScrapingPipeline
-    ]
-
-    opts = [strategy: :one_for_one, name: Scraper.Supervisor]
-    Supervisor.start_link(children, opts)
-  end
-
   def start_link(_args) do
     options = [
       name: ScrapingPipeline,
@@ -19,7 +10,7 @@ defmodule ScrapingPipeline do
         # Our PageProducer emits plain string like "twitter.com", 
         # but since Broadway requires messages to be in Broadway.Message
         # format, we use ScrapingPipeline.transform().
-        transformer: [ScrapingPipeline, :transform, []]
+        transformer: {ScrapingPipeline, :transform, []}
       ],
       processors: [
         default: []

@@ -7,11 +7,7 @@ defmodule Scraper.Application do
   def start(_type, _args) do
     # the process starts in this order
     children = [
-      PageProducer,
-      PageConsumerSupervisor,
-      # Since we have to find PageConsumerSupervisors pid,
-      # OnlinePageProducerConsumer should come after.
-      OnlinePageProducerConsumer
+      ScrapingPipeline
     ]
 
     opts = [strategy: :one_for_one, name: Scraper.Supervisor]
